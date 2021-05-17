@@ -14,3 +14,17 @@ automate their development processes, without putting forth unreasonable resourc
 This repo contains the code and dockefile that allows any agent to create a headless web browser which 
 logs into a specified instance, navigates to the client test runner page, and tearsdown the whole affair after.
 
+## Building the Image (Linux)
+`$ docker build -t atf_headless_browser .`
+
+## Running locally in Docker
+1. `$ docker swarm init`
+2. `$ echo "Your ServiceNow password" | docker secret create sn_password -`
+3. `$ ./docker-start.sh`
+
+## Verify Success in instance
+1. Start the docker container using the steps above
+2. Wait for logs to settle 
+3. Go to the `sys_atf_agent` table
+4. Should see a record for the agent with OS type of Linux and with the configured browser
+
