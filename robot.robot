@@ -23,12 +23,14 @@ Open Browser To Login Page
     ${LOGIN URL}=    Catenate   ${INSTANCE_URL}/${LOGIN_PAGE}
     Log    Login URL is ${LOGIN_URL}   console=${True}
     Open Browser    ${LOGIN URL}    ${BROWSER}  options=${BROWSER_OPTIONS}
+    # Saw some weirdness with the login page so wait some extra time for the page to settle
+    Sleep    2s
 
 Go To Headless Validation Page
     # Test page should display basic message
     ${HEADLESS_VALIDATION_URL}=  Catenate   ${INSTANCE_URL}/${HEADLESS_VALIDATION_PAGE}
     Log    Going to entry: ${HEADLESS_VALIDATION_URL}    console=${True}
-    Go To 	${HEADLESS_VALIDATION_URL}
+    Go To   ${HEADLESS_VALIDATION_URL}
     # Confirm it can browse to the page
     Page Should Contain Element    id:${VP_VALIDATION_ID}  Was unable to authenticate the ServiceNow user, please check username and password is correct. (Less likely) the validation page URL is incorrect: ${HEADLESS_VALIDATION_URL}
     # Validate it has the correct roles
@@ -39,7 +41,7 @@ Go To Headless Validation Page
 Go To Test Runner Page
     ${TEST RUNNER URL}=  Catenate   ${INSTANCE_URL}/${RUNNER_URL}&sys_atf_agent=${AGENT_ID}
     Log    Going to runner: ${TEST RUNNER URL}    console=${True}
-    Go To 	${TEST RUNNER URL}
+    Go To   ${TEST RUNNER URL}
     Page Should Contain Element    id:${TEST_RUNNER_BANNER_ID}  The client test runner page could not load, Property sn_atf.schedule.enabled and sn_atf.runner.enabled must be true
     # Make sure the ATF Runner is online before we move on
     Log    Waiting for agent to come online    console=${True}
@@ -55,7 +57,16 @@ Input Password
     Input Text    ${PASSWORD_FIELD_ID}    ${PASSWORD.strip()}
 
 Submit Credentials
+    ${CURRENT_USERNAME}=    Get Element Attribute    ${USER_FIELD_ID}    value
+    ${CURRENT_PASSSWORD}=    Get Element Attribute    ${PASSWORD_FIELD_ID}    password
+    ${PASSWORD}=    Get File    ${SECRET_PATH}
+
+    # Do a sanity check to verify that the username/password fields got set properly and if not set them again
+    Run Keyword Unless    "${CURRENT_USERNAME}" == "${USERNAME}"    Input Username
+    Run Keyword Unless    "${CURRENT_PASSSWORD}" == "${PASSWORD.strip()}"    Input Password
+
     Click Button    ${LOGIN_BUTTON_ID}
+    Log     Clicked Login Button    console=${True}
 
 Is Agent Offline
     Run Keyword If    '${HEARTBEAT_ENABLED}'=='false'    fail
