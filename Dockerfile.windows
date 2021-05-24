@@ -1,19 +1,34 @@
-FROM mcr.microsoft.com/windows/servercore:ltsc2016
+FROM mcr.microsoft.com/windows/servercore:10.0.17763.1879
 
 RUN powershell -Command Set-ExecutionPolicy Bypass -Scope Process -Force; \
      [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; \
      iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 
 RUN choco install -y python3 --version 3.6.5
+
+RUN powershell -c Add-WindowsFeature Web-WebSockets
+
+# install chrome
+# Fonts are needed for Chrome to work properly, ltsc2019 and higher do not have fonts built-in
+ADD Files/FontsToAdd.tar /Fonts/
+WORKDIR /Fonts/
+RUN powershell -c .\Add-Font.ps1 Fonts
+WORKDIR /
+
 RUN choco install -y googlechrome
 
-RUN python -m pip install robotframework
-RUN python -m pip install robotframework-seleniumlibrary
-RUN python -m pip install webdrivermanager
-RUN webdrivermanager chrome
+RUN pip install robotframework webdrivermanager robotframework-seleniumlibrary robotframework-requests
 
-RUN powershell -c $newPath = ('C:\Users\ContainerAdministrator\AppData\Local\rasjani\WebDriverManager\bin;C:\Python\Scripts;{0}' -f $env:PATH); \
-	[Environment]::SetEnvironmentVariable('PATH', $newPath, [EnvironmentVariableTarget]::Machine);
+RUN set PATH='C:\Users\ContainerAdministrator\AppData\Local\rasjani\WebDriverManager\bin;C:\Python\Scripts;C:\Program Files\Google\Chrome\Application;%PATH%
+RUN setx path "%path%;C:\Users\ContainerAdministrator\AppData\Local\rasjani\WebDriverManager\bin;C:\Python\Scripts;C:\Program Files\Google\Chrome\Application;"
+
+RUN powershell -Command \
+    $ErrorActionPreference = 'Stop'; \
+  $chromeVersion = [Diagnostics.FileVersionInfo]::GetVersionInfo('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe').ProductVersion; \
+  New-Item "HKCU:\Software\Google\Chrome\BLBeacon" -Force ; \
+  New-ItemProperty "HKCU:\Software\Google\Chrome\BLBeacon" -Name version -Value "$chromeVersion" -Force;
+
+RUN webdrivermanager chrome
 
 COPY robot.robot /
 
