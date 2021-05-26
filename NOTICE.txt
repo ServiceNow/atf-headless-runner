@@ -19,8 +19,8 @@ This software may incorporate the below material from third parties:
 
 Chrome
 Firefox
-msedge-selenium-tools-3.143.3
 robotframework-3.2.1
 robotframework-requests-0.6.6
 robotframework-seleniumlibrary-4.5.0
-Windows Servercore Docker Image-ltsc2016
+python Docker Image-3-slim
+Windows Servercore Docker Image-ltsc2019
