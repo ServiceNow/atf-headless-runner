@@ -28,7 +28,7 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Login
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.GITHUB_USERNAME }} --password-stdin
         
       - name: Publish
         run: docker push ghcr.io/servicenow/atf-headless-runner:${{ github.event.release.tag_name }}
