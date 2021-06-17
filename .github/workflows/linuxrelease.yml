@@ -1,0 +1,34 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Linux Image Release
+
+# Controls when the action will run. 
+on:
+  release:
+    types: [published]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Build
+        run: docker build -t ghcr.io/servicenow/atf-headless-runner:${{ github.event.release.tag_name }} .
+
+      # Runs a set of commands using the runners shell
+      - name: Login
+        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+        
+      - name: Publish
+        run: docker push ghcr.io/servicenow/atf-headless-runner:${{ github.event.release.tag_name }}
