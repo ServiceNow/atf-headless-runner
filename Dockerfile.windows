@@ -15,7 +15,7 @@ WORKDIR /Fonts/
 RUN powershell -c .\Add-Font.ps1 Fonts
 WORKDIR /
 
-RUN choco install -y googlechrome
+RUN choco install -y --ignore-checksums googlechrome
 
 RUN pip install robotframework webdrivermanager robotframework-seleniumlibrary robotframework-requests
 
