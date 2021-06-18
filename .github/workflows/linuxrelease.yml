@@ -24,11 +24,11 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build
-        run: docker build -t ghcr.io/servicenow/atf-headless-runner:${{ github.event.release.tag_name }} .
+        run: docker build -t ghcr.io/servicenow/atf-headless-runner:lin-${{ github.event.release.tag_name }} .
 
       # Runs a set of commands using the runners shell
       - name: Login
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.GITHUB_USERNAME }} --password-stdin
         
       - name: Publish
-        run: docker push ghcr.io/servicenow/atf-headless-runner:${{ github.event.release.tag_name }}
+        run: docker push ghcr.io/servicenow/atf-headless-runner:lin-${{ github.event.release.tag_name }}
