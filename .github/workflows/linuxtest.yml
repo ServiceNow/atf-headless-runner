@@ -46,9 +46,6 @@ jobs:
         env:
           URL: https://atfheadlessrunner.service-now.com
 
-      - name: Remove Docker service and secrets
-        run: docker secret rm sn_password
-
 
 
 
