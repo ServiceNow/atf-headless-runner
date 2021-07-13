@@ -14,6 +14,8 @@ SECRET_NAME=sn_password
 IMAGE_NAME=atf_headless_runner
 IMAGE_TAG=latest
 
+SERVICE_NAME=$(python -c 'import uuid; print (str(uuid.uuid1()).replace("-", ""))')
+
 docker service create \
 -e AGENT_ID=$AGENT_ID \
 -e INSTANCE_URL=$INSTANCE_URL \
@@ -40,14 +42,13 @@ docker service create \
 --restart-delay 0s \
 --restart-max-attempts 1 \
 --restart-window 1m \
---name $IMAGE_NAME \
+--name $SERVICE_NAME \
 ${IMAGE_NAME}:${IMAGE_TAG}
 
-SERVICE_ID=$(docker service list -f "name=$IMAGE_NAME" -q)
-echo $SERVICE_ID
+echo "Service Name: $SERVICE_NAME"
 
 # Comment this line to not remove services automatically on Ctrl+C 
-trap "docker service rm $SERVICE_ID" EXIT
+trap "docker service rm $SERVICE_NAME" EXIT
 
-docker service logs $SERVICE_ID -f
+docker service logs $SERVICE_NAME -f
 

@@ -27,8 +27,8 @@ jobs:
       - name: Build the Linux Container
         run: docker build -t atf_headless_runner:latest .
 
-      - name: Init Docker Swarm
-        run: docker swarm init
+      # - name: Init Docker Swarm
+      #   run: docker swarm init
 
       - name: Create the Docker Secret
         run: |
@@ -47,10 +47,7 @@ jobs:
           URL: https://atfheadlessrunner.service-now.com
 
       - name: Remove Docker service and secrets
-        if: always()
-        run: |
-          docker service rm atf_headless_runner
-          docker secret rm sn_password
+        run: docker secret rm sn_password
 
 
 
