@@ -8,6 +8,8 @@ AGENT_ID=$(python -c 'import uuid; print (str(uuid.uuid1()).replace("-", ""))')
 ./docker-start.sh $URL admin $BROWSER $AGENT_ID &
 sleep 1m
 
+echo "Agent ID: $AGENT_ID"
+
 RESULT=$(curl "$URL/api/now/table/sys_atf_agent/$AGENT_ID" \
 	--request GET \
 	--header "Accept:application/json" \
