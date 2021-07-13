@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build the Linux Container
-        run: docker build -t atf-headless-runner .
+        run: docker build -t atf_headless_runner:latest .
 
       - name: Init Docker Swarm
         run: docker swarm init

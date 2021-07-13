@@ -11,7 +11,7 @@ echo "AGENT_ID: $AGENT_ID"
 
 # Can configure these if need be.
 SECRET_NAME=sn_password
-IMAGE_NAME=atf_headless_browser
+IMAGE_NAME=atf_headless_runner
 IMAGE_TAG=latest
 
 docker service create \
