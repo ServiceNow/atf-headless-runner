@@ -1,6 +1,13 @@
 # THESE VARIBALES NEED TO BE SET
-INSTANCE_URL=http://192.168.1.9:8081
-INSTANCE_USERNAME=admin
+INSTANCE_URL=$1
+INSTANCE_USERNAME=$2
+BROWSER=$3
+AGENT_ID=$4
+
+echo "INSTANCE_URL: $INSTANCE_URL"
+echo "INSTANCE_USERNAME: $INSTANCE_USERNAME"
+echo "BROWSER: $BROWSER"
+echo "AGENT_ID: $AGENT_ID"
 
 # Can configure these if need be.
 SECRET_NAME=sn_password
@@ -8,9 +15,9 @@ IMAGE_NAME=atf_headless_browser
 IMAGE_TAG=latest
 
 docker service create \
--e AGENT_ID=$(python -c 'import uuid; print str(uuid.uuid1()).replace("-", "")') \
+-e AGENT_ID=$AGENT_ID \
 -e INSTANCE_URL=$INSTANCE_URL \
--e BROWSER=headlesschrome \
+-e BROWSER=$BROWSER \
 -e SN_USERNAME=$INSTANCE_USERNAME \
 -e TIMEOUT_MINS=1440 \
 -e LOGIN_PAGE=login.do \
