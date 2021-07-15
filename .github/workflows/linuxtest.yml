@@ -28,8 +28,8 @@ jobs:
       - name: Build the Linux Container
         run: docker build -t atf_headless_runner:latest .
 
-      # - name: Init Docker Swarm
-      #   run: docker swarm init
+      - name: Init Docker Swarm
+        run: docker swarm init
 
       - name: Create the Docker Secret
         run: |
