@@ -25,11 +25,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Build the Linux Container
+      - name: Build the Image
         run: docker build -t atf_headless_runner:latest .
 
-      - name: Init Docker Swarm
-        run: docker swarm init
+      # - name: Init Docker Swarm
+      #   run: docker swarm init
 
       - name: Create the Docker Secret
         run: |
@@ -37,30 +37,20 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          # python get-pip.py
+          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+          python get-pip.py
           python -m pip install docker
           python -m pip install requests
 
       - name: Chrome Test
         run: |
           docker secret list
-          python test.py $URL ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Linux
+          python test.py ${{ env.URL }} ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Linux
         env:
-          # URL: http://192.168.1.10:808
           URL: https://atfheadlessrunner.service-now.com
 
       - name: Firefox Test
         run: |
-          python test.py $URL ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlessfirefox Firefox Linux
+          python test.py ${{ env.URL }} ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlessfirefox Firefox Linux
         env:
           URL: https://atfheadlessrunner.service-now.com
-          # URL: http://192.168.1.10:808
-
-
-
-
-
-
-
-

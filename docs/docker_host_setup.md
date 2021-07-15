@@ -3,8 +3,6 @@
 These steps are for configuring the full integration of the Headless Browser for Automated Test Framework with a ServiceNow instance.
 For simplified steps for development of the docker image and related automation files see the REAMDE. 
 
-These docs are meant to be a mirror of the official ServiceNow documentation for configuring a linux host machine and ServiceNow instance.
-
 # Prereqs
 1. Port 2376 accessible from outside the host
 2. Host can access the Service Now instance

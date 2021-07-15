@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # python3 test.py http://192.168.1.10:8080 admin headlesschrome Chrome Linux
-# python3 test.py https://atfheadlessrunner.service-now.com admin headlesschrome Chrome Linux
 
-from dockerStart import startDockerService, printLogs
+from start import startDockerService, printLogs
 from multiprocessing import Pool
 import time
 import requests

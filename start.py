@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# python3 dockerStart.py http://192.168.1.10:8080 admin headlesschrome
+# python3 start.py http://192.168.1.10:8080 admin headlesschrome
 
 import sys
 import docker
