@@ -1,4 +1,5 @@
 # This is a basic workflow to help you get started with Actions
+# act -s TESTING_INSTANCE_PASSWORD=admin -j test
 
 name: Linux Image Build
 
@@ -27,24 +28,34 @@ jobs:
       - name: Build the Linux Container
         run: docker build -t atf_headless_runner:latest .
 
-      - name: Init Docker Swarm
-        run: docker swarm init
+      # - name: Init Docker Swarm
+      #   run: docker swarm init
 
       - name: Create the Docker Secret
         run: |
           echo "${{ secrets.TESTING_INSTANCE_PASSWORD }}" | docker secret create sn_password -
 
+      - name: Install python dependencies
+        run: |
+          # curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+          # python get-pip.py
+          python -m pip install docker
+          python -m pip install requests
+
       - name: Chrome Test
         run: |
-          ./test.sh $URL ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Linux
+          docker secret list
+          python test.py $URL ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Linux
         env:
+          # URL: http://192.168.1.10:808
           URL: https://atfheadlessrunner.service-now.com
 
       - name: Firefox Test
         run: |
-          ./test.sh $URL ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlessfirefox Firefox Linux
+          python test.py $URL ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlessfirefox Firefox Linux
         env:
           URL: https://atfheadlessrunner.service-now.com
+          # URL: http://192.168.1.10:808
 
 
 

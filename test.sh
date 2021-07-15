@@ -15,6 +15,8 @@ RESULT=$(curl "$URL/api/now/table/sys_atf_agent/$AGENT_ID" \
 	--header "Accept:application/json" \
 	--user 'admin':"$USER_PASSWORD")
 
+r = requests.get('https://api.github.com/events')
+
 echo $RESULT
 
 OS=$(echo $RESULT | python -c 'import json,sys;obj=json.load(sys.stdin);print (obj["result"]["os_name"]);')
