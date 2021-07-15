@@ -28,8 +28,8 @@ jobs:
       - name: Build the Image
         run: docker build -t atf_headless_runner:latest .
 
-      # - name: Init Docker Swarm
-      #   run: docker swarm init
+      - name: Init Docker Swarm
+        run: docker swarm init
 
       - name: Create the Docker Secret
         run: |
@@ -37,8 +37,6 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-          python get-pip.py
           python -m pip install docker
           python -m pip install requests
 

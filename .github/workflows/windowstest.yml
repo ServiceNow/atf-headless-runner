@@ -29,7 +29,7 @@ jobs:
         run: docker build -f Dockerfile.windows -t atf-headless-runner:latest .
 
       - name: Init Docker Swarm
-        run: docker swarm init
+        run: docker swarm init --advertise-addr 127.0.0.1
 
       - name: Create the Docker Secret
         run: |
