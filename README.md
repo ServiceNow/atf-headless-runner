@@ -13,63 +13,29 @@ automate their development processes, without putting forth unreasonable resourc
 
 This repo contains the code and dockerfile that allows any agent to create a headless web browser which logs into a specified instance, navigates to the client test runner page, and tears down the whole affair after.
 
-## Linux/Mac OS
+Make sure you have Docker installed. 
+Installation instructions for Linux/MacOS can be found [here](https://docs.docker.com/get-docker/), and instructions for Windows Server can be found [here](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment?tabs=Windows-Server#install-docker)
 
-Make sure you have Docker installed. Installation instructions for Linux can be found [here](https://docs.docker.com/get-docker/)
+## "Production" Usage
+
+1. Pull the image with the correct tag: `docker pull ghcr.io/servicenow/atf-headless-runner:<lin | win>-<version>`
+2. Follow instructions in `docs/docker_host_setup.md` to configure your server to be able to connect to your ServiceNow instance
+
+## Local Development
 
 ### Building the Image
 `$ docker build -t atf_headless_browser .`
 
-### Running locally in Docker
+### Running locally
 1. `$ docker swarm init`
-2. `$ echo "Your ServiceNow password" | docker secret create sn_password -`
-3. Make sure to add your corrected values to the ENV variables in `docker-start.sh` script
-4. `$ ./docker-start.sh`
+2. `$ echo "ServiceNow password" | docker secret create sn_password -`
+3. `$ python3 start.py http://<ServiceNow Instance URL> <ServiceNow Username> (headlesschrome|headlessfirefox)`
 
-### Verify Success in instance
+### Verify Success in instance (Rome and later)
 1. Start the docker container using the steps above
 2. Wait for the "Agent is online" message in the logs
 3. Go to the `sys_atf_agent` table
-4. Should see a record for the agent with OS type of Linux and with the configured browser with status "online"
-
-### Stopping and removing all services
-
-When the container and service startup successfully via `docker-start.sh` the serivce/container will be automatically 
-stopped, and removed. If the container doesn't startup successfully, you might need to manually remove the service by 
-running `docker service list` to get the ID of the service, and run `docker service rm <service id>` to remove it.
-
-## Windows Server
-
-Make sure you have Docker installed. Installation instructions for Windows Server can be found [here](https://docs.microsoft.com/en-us/virtualization/windowscontainers/quick-start/set-up-environment?tabs=Windows-Server#install-docker)
-
-### Building the Image
-Since Windows Docker images need to be based on the same version of windows as the host machine you will most likely need 
-to change the Dockerfile to match the base. 
-1. In an administrator command line run `ver` you are looking for the windows version including build number (ex: 10.0.17763.1879)
-2. Change the tag on the first line of `Dockerfile.windows` to match the windows version of your host
-2. `$ docker build -f Dockerfile.windows -t atf_headless_browser .`
-
-### Running locally in Docker
-
-Make sure that your computer is able to connect to your SerivceNow instance, and that
-you have a user created with the "admin" or "atf_test_designer role"
-
-1. `$ docker swarm init`
-2. `$ echo Your_ServiceNow_password | docker secret create sn_password -`
-3. Change values in docker-start.sh to match your ServiceNow instance. Additionally change the SECRET_PATH docker env variable to be: `C:\ProgramData\Docker\secrets\%SECRET_NAME%`
-4. `$ ./docker-start.sh`
-
-### Verify Success in instance
-1. Start the docker container using the steps above
-2. Wait for the "Agent is online" message in the logs
-3. Go to the `sys_atf_agent` table
-4. Should see a record for the agent with OS type of Linux and with the configured browser with status "online"
-
-### Stopping and removing all services
-
-When the container and service startup successfully via `docker-start.sh` the serivce/container will be automatically 
-stopped, and removed. If the container doesn't startup successfully, you might need to manually remove the service by 
-running `docker service list` to get the ID of the service, and run `docker service rm <service id>` to remove it.
+4. Should see a record for the agent with correct OS type and correct browser type with status "online"
 
 # Notices
 

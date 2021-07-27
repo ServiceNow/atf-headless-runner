@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  test:
     # The type of runner that the job will run on
     runs-on: windows-2019
 
@@ -24,9 +24,24 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      
-      - name: Get the Windows Server version
-        run: "[System.Environment]::OSVersion.Version"
 
-      - name: Build the Windows Container
+      - name: Build the Image
         run: docker build -f Dockerfile.windows -t atf-headless-runner:latest .
+
+      # - name: Init Docker Swarm
+      #   run: docker swarm init --advertise-addr 127.0.0.1
+
+      # - name: Create the Docker Secret
+      #   run: |
+      #     echo ${{ secrets.TESTING_INSTANCE_PASSWORD }} | docker secret create sn_password -
+
+      # - name: Install python dependencies
+      #   run: |
+      #     python -m pip install six
+      #     python -m pip install docker
+      #     python -m pip install requests
+
+      # - name: Chrome Test
+      #   run: python test.py ${{ env.URL }} ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Windows
+      #   env:
+      #     URL: https://atfheadlessrunner.service-now.com
