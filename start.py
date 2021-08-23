@@ -1,10 +1,12 @@
 #!/usr/bin/python
-# python3 start.py http://192.168.1.10:8080 admin headlesschrome
+# python3 start.py <instance url> <sn username> <browser name>
+# <browser name> can be headlesschrome, headlessfirefox, or on Windows Edge
 
 import sys
 import docker
 import uuid
 import atexit
+import os
 
 def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 	print ('INSTANCE_URL: ' + INSTANCE_URL)
@@ -29,12 +31,10 @@ def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 		'LOGIN_PAGE=login.do',
 		'TIMEOUT_MINS=1440',
 		'RUNNER_URL=atf_test_runner.do?sysparm_nostack=true&sysparm_scheduled_tests_only=true&sysparm_headless=true',
-		"BROWSER_OPTIONS=add_argument('--no-sandbox');add_argument('--disable-gpu')",
 		'PAGE_TITLE_TEXT=ServiceNow',
 		'LOGIN_BUTTON_ID=sysverb_login',
 		'USER_FIELD_ID=user_name',
 		'PASSWORD_FIELD_ID=user_password',
-		f'SECRET_PATH=/run/secrets/{SECRET_NAME}', # TODO make this cross platform
 		'HEADLESS_VALIDATION_PAGE=ui_page.do?sys_id=d21d8c0b772220103fe4b5b2681061a6',
 		'VP_VALIDATION_ID=headless_vp_validation',
 		'VP_HAS_ROLE_ID=headless_vp_has_role',
@@ -44,8 +44,12 @@ def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 		'HEARTBEAT_URI=/api/now/atf_agent/online',
 	]
 
-	secretList = client.secrets.list()
+	if os.name == 'nt':
+		env.append(f'SECRET_PATH=C:\\ProgramData\\docker\\secrets\\{SECRET_NAME}')
+	else:
+		env.append(f'SECRET_PATH=/run/secrets/{SECRET_NAME}')
 
+	secretList = client.secrets.list()
 	secrets = []
 	for secret in secretList:
 		secretRef = docker.types.SecretReference(secret.id, secret.name, uid='1000', gid='1000')
@@ -80,8 +84,3 @@ if __name__ == "__main__":
 
 	service = startDockerService(INSTANCE_URL=INSTANCE_URL, INSTANCE_USERNAME=INSTANCE_USERNAME, BROWSER=BROWSER, AGENT_ID=AGENT_ID)
 	printLogs(service)
-
-
-
-
-

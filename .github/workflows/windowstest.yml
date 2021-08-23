@@ -26,22 +26,22 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build the Image
-        run: docker build -f Dockerfile.windows -t atf-headless-runner:latest .
+        run: docker build -f Dockerfile.windows -t atf_headless_runner:latest .
 
-      # - name: Init Docker Swarm
-      #   run: docker swarm init --advertise-addr 127.0.0.1
+      - name: Init Docker Swarm
+        run: docker swarm init --advertise-addr 127.0.0.1
 
-      # - name: Create the Docker Secret
-      #   run: |
-      #     echo ${{ secrets.TESTING_INSTANCE_PASSWORD }} | docker secret create sn_password -
+      - name: Create the Docker Secret
+        run: |
+          echo ${{ secrets.TESTING_INSTANCE_PASSWORD }} | docker secret create sn_password -
 
-      # - name: Install python dependencies
-      #   run: |
-      #     python -m pip install six
-      #     python -m pip install docker
-      #     python -m pip install requests
+      - name: Install python dependencies
+        run: |
+          python -m pip install six
+          python -m pip install docker
+          python -m pip install requests
 
-      # - name: Chrome Test
-      #   run: python test.py ${{ env.URL }} ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Windows
-      #   env:
-      #     URL: https://atfheadlessrunner.service-now.com
+      - name: Chrome Test
+        run: python test.py ${{ env.URL }} ${{ secrets.TESTING_INSTANCE_PASSWORD }} headlesschrome Chrome Windows
+        env:
+          URL: https://atfheadlessrunner.service-now.com
