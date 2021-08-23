@@ -44,10 +44,10 @@ def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 		'HEARTBEAT_URI=/api/now/atf_agent/online',
 	]
 
-	if os.name == 'nt':
-		env.append(f'SECRET_PATH=C:\\ProgramData\\docker\\secrets\\{SECRET_NAME}')
-	else:
-		env.append(f'SECRET_PATH=/run/secrets/{SECRET_NAME}')
+	# if os.name == 'nt':
+	# 	env.append(f'SECRET_PATH=C:\\ProgramData\\docker\\secrets\\{SECRET_NAME}')
+	# else:
+	# 	env.append(f'SECRET_PATH=/run/secrets/{SECRET_NAME}')
 
 	secretList = client.secrets.list()
 	secrets = []
