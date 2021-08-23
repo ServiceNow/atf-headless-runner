@@ -5,6 +5,7 @@ import sys
 import docker
 import uuid
 import atexit
+import os
 
 def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 	print ('INSTANCE_URL: ' + INSTANCE_URL)
@@ -34,7 +35,6 @@ def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 		'LOGIN_BUTTON_ID=sysverb_login',
 		'USER_FIELD_ID=user_name',
 		'PASSWORD_FIELD_ID=user_password',
-		f'SECRET_PATH=/run/secrets/{SECRET_NAME}', # TODO make this cross platform
 		'HEADLESS_VALIDATION_PAGE=ui_page.do?sys_id=d21d8c0b772220103fe4b5b2681061a6',
 		'VP_VALIDATION_ID=headless_vp_validation',
 		'VP_HAS_ROLE_ID=headless_vp_has_role',
@@ -43,6 +43,11 @@ def startDockerService(INSTANCE_URL, INSTANCE_USERNAME, BROWSER, AGENT_ID):
 		'HEARTBEAT_ENABLED=true',
 		'HEARTBEAT_URI=/api/now/atf_agent/online',
 	]
+
+	if os.name == 'nt':
+		env.append(f'SECRET_PATH=C:\\ProgramData\\docker\\secrets\\{SECRET_NAME}')
+	else:
+		env.append(f'SECRET_PATH=/run/secrets/{SECRET_NAME}')
 
 	secretList = client.secrets.list()
 
