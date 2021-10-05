@@ -43,18 +43,28 @@ Installation instructions for Linux/MacOS can be found [here](https://docs.docke
 
 ### Instance integration
 1. Run `docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name socat -p 127.0.0.1:2375:2375 bobrik/socat TCP-LISTEN:2375,fork UNIX-CONNECT:/var/run/docker.sock` to expose the docker API locally ono port 2375
-2. In instane create a Connection record setup `http://localhost:2375` and set connection alias to `docker`
+2. Verify the docker API is exposed by running `curl http://localhost:2375/images/json` and if you get a response then its successful
+3. In instance Create sys_connection record:
+- type: HTTP
+- Name: Anything (Docker ATF)
+- Connection Alias: the docker spoke
+- Connection URL: http://localhost:2375
+
 3. In ATF Properties page, set the following properties:
+- enabled = true
+- user account login = admin
+- secret id = run `docker secret list` and copy the ID of the sn_password secret
+- docker image = atf_headless_browser:latest
 
-Turn on Test Runs and Enable Headless
-Image Name - `atf_headless_browser:latest`
-Secret ID - Run `docker secret list` and copy the ID of your sn_password secret
+4. Make sure no other Scheduled Client Test Runners are connected to the instance
+5. Create a new ATF Schedule Record, 
+- Runs On: "On Demand" 
+- Test Suite: "Child A"
+- Browser Name: Any (will default the headless to run in Chrome, can select Chrome or firefox)
+- OS Name: Any
 
-4. Create a new ATF Schedule Record, set the Runs On to "On Demand" 
-5. Set "Child A" as the test suite
-6. Make sure no other Scheduled Client Test Runners are connected to the instance
-7. Click "Run Now"
-8. See the tests run in a headless environment, an ad hoc docker container will be created for each test run
+6. Click "Run Now"
+7. See the tests run in a headless environment, an ad hoc docker container will be created for each test run
 
 # Notices
 
