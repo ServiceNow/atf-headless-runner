@@ -24,13 +24,16 @@ Installation instructions for Linux/MacOS can be found [here](https://docs.docke
 ## Local Development
 
 ### Building the Image
-`$ docker build -t atf_headless_browser .`
+
 
 ### Running locally
 1. [Install Docker](https://docs.docker.com/desktop/mac/install/)
-1. `$ docker swarm init`
-2. `$ echo "ServiceNow password" | docker secret create sn_password -`
-3. `$ python3 start.py http://<ServiceNow Instance URL> <ServiceNow Username> (headlesschrome|headlessfirefox)`
+2. Clone this repo `https://github.com/ServiceNow/atf-headless-runner.git`
+3. cd into the repo
+4. Build Image from dockerfile: `$ docker build -t atf_headless_browser .`
+5. `$ docker swarm init` this starts docker swarm which gives us access to the docker secrets module
+6. `$ echo "ServiceNow password" | docker secret create sn_password -` adding the instance password as a docker secret
+7. `$ python3 start.py http://<ServiceNow Instance URL> <ServiceNow Username> (headlesschrome|headlessfirefox)` starting a container from our image and having it connect to an already existing instance
 
 ### Verify Success in instance (Rome and later)
 1. Start the docker container using the steps above
