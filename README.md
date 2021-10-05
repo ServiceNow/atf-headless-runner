@@ -21,10 +21,7 @@ Installation instructions for Linux/MacOS can be found [here](https://docs.docke
 1. Pull the image with the correct tag: `docker pull ghcr.io/servicenow/atf-headless-runner:<lin | win>-<version>`
 2. Follow instructions in `docs/docker_host_setup.md` to configure your server to be able to connect to your ServiceNow instance
 
-## Local Development
-
-### Building the Image
-
+## Development
 
 ### Running locally
 1. [Install Docker](https://docs.docker.com/desktop/mac/install/)
@@ -65,6 +62,21 @@ Installation instructions for Linux/MacOS can be found [here](https://docs.docke
 
 6. Click "Run Now"
 7. See the tests run in a headless environment, an ad hoc docker container will be created for each test run
+
+## CI Setup
+
+The Continuous integration for this repo is setup in github actions defined in the .github/workflows directory. Upon every commit to a PR to master or commit on master the action will build the docker image an start a container that connects to `https://atfheadlessrunner.service-now.com`. Then it will use the Table API to verify that a `sys_atf_agent` record will all the correct values is present. 
+
+## Releasing 
+
+1. On the repo home page click "Releases"
+<img width="457" alt="Screen Shot 2021-10-05 at 3 54 59 PM" src="https://user-images.githubusercontent.com/13264552/136101451-9425ac83-d0fa-4b39-b053-dd9cb306b8b5.png">
+
+2. Click "Draft a New Release"
+3. In the release title put the new version number
+4. Click publish release
+
+Upon pubishing the release a github action will automatically be created which will build BOTH the windows and linux docker images from the repo, and will upload both of them to [Github Containeer Registry](https://github.com/ServiceNow/atf-headless-runner/pkgs/container/atf-headless-runner). The tags of the images will be: `lin-version` (for linux), and `win-version` (for windows).
 
 # Notices
 
