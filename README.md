@@ -27,6 +27,7 @@ Installation instructions for Linux/MacOS can be found [here](https://docs.docke
 `$ docker build -t atf_headless_browser .`
 
 ### Running locally
+1. [Install Docker](https://docs.docker.com/desktop/mac/install/)
 1. `$ docker swarm init`
 2. `$ echo "ServiceNow password" | docker secret create sn_password -`
 3. `$ python3 start.py http://<ServiceNow Instance URL> <ServiceNow Username> (headlesschrome|headlessfirefox)`
@@ -36,6 +37,21 @@ Installation instructions for Linux/MacOS can be found [here](https://docs.docke
 2. Wait for the "Agent is online" message in the logs
 3. Go to the `sys_atf_agent` table
 4. Should see a record for the agent with correct OS type and correct browser type with status "online"
+
+### Instance integration
+1. Run `docker run -d -v /var/run/docker.sock:/var/run/docker.sock --name socat -p 127.0.0.1:2375:2375 bobrik/socat TCP-LISTEN:2375,fork UNIX-CONNECT:/var/run/docker.sock` to expose the docker API locally ono port 2375
+2. In instane create a Connection record setup `http://localhost:2375` and set connection alias to `docker`
+3. In ATF Properties page, set the following properties:
+
+Turn on Test Runs and Enable Headless
+Image Name - `atf_headless_browser:latest`
+Secret ID - Run `docker secret list` and copy the ID of your sn_password secret
+
+4. Create a new ATF Schedule Record, set the Runs On to "On Demand" 
+5. Set "Child A" as the test suite
+6. Make sure no other Scheduled Client Test Runners are connected to the instance
+7. Click "Run Now"
+8. See the tests run in a headless environment, an ad hoc docker container will be created for each test run
 
 # Notices
 
