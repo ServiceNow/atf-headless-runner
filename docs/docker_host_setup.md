@@ -38,7 +38,7 @@ chmod 0444 server-cert.pem
 #  Create the Client PEM
 ```
 openssl genrsa -out client-key.pem 4096
-openssl req -subj "/CN=example.com" -new -key client-key.pem -out client.csr
+openssl req -subj "/CN=$HOSTNAME" -new -key client-key.pem -out client.csr
 echo "extendedKeyUsage = clientAuth" > extfile.cnf
 openssl x509 -passin pass:$PASSWORD -req -days 365 -in client.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out client-cert.pem -extfile extfile.cnf
 
